@@ -168,6 +168,68 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stro
   color:#fff;font-weight:600}
 .upd{font-size:12px;color:var(--ink-3);text-align:center;margin-top:16px}
 
+
+/* Tasklar */
+.fchips{display:flex;gap:6px;overflow-x:auto;margin:4px -16px 0;padding:0 16px 2px;scrollbar-width:none}
+.fchips::-webkit-scrollbar{display:none}
+.fchips button{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);font-weight:600;font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.fchips button.on{background:var(--brand);color:#fff}
+.fchips button .n{margin-left:6px;font-size:12px;opacity:.75}
+.fchips.small button{padding:6px 12px;font-size:12.5px;background:#fff;border:1.5px solid var(--line)}
+.fchips.small button.on{background:var(--brand-soft);color:var(--brand);border-color:var(--brand)}
+.tc{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;margin-top:8px;cursor:pointer}
+.tc .top1{display:flex;gap:10px;align-items:flex-start}
+.tc .dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;background:var(--none)}
+.tc .dot.h{background:var(--bad)}
+.tc .mt{flex:1;min-width:0;font-weight:500;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tc .id{font-size:12px;color:var(--ink-3);flex:none;margin-top:2px}
+.tc .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:8px 0 0 18px;font-size:12.5px;color:var(--ink-3)}
+.tc .meta span{display:inline-flex;align-items:center;gap:4px}
+.tc .meta svg.i{width:14px;height:14px}
+.tc .meta .pill{margin-left:auto}
+.h-yangi{background:var(--info-soft);color:var(--info)}
+.h-korildi{background:var(--brand-soft);color:var(--brand)}
+.h-tekshiruvda{background:var(--off-soft);color:var(--off)}
+.h-qaytarildi{background:var(--bad-soft);color:var(--bad)}
+.h-qabul{background:var(--ok-soft);color:var(--ok)}
+.h-bekor{background:var(--none-soft);color:var(--ink-3)}
+.h-late{background:var(--bad);color:#fff}
+.fab{position:fixed;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:15;display:flex;align-items:center;gap:8px;
+  padding:14px 18px;border-radius:999px;background:var(--brand);color:#fff;font-weight:700;box-shadow:0 8px 24px rgba(1,73,158,.35)}
+.fab svg.i{stroke-width:2.4}
+.info{background:var(--card);border-radius:var(--r-sm);padding:4px 14px;margin-top:12px}
+.info div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.info div:last-child{border-bottom:0}
+.info div span{color:var(--ink-3)}
+.info div b{font-weight:600;text-align:right}
+.bigtext{font-size:16px;font-weight:600;line-height:1.4}
+.proof{margin-top:12px;background:var(--card);border-radius:var(--r-sm);padding:12px}
+.proof img{width:100%;border-radius:12px;display:block;margin-top:8px}
+.proof .pt{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+.cmts{margin-top:12px}
+.cmt{background:var(--card);border-radius:12px;padding:10px 12px;margin-top:6px;font-size:14px}
+.cmt small{display:block;color:var(--ink-3);font-size:12px;margin-bottom:2px}
+.acts{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.acts button{flex:1;min-width:120px;padding:13px 10px;border-radius:999px;font-weight:700;background:var(--card);color:var(--ink)}
+.acts button.pri{background:var(--brand);color:#fff}
+.acts button.ok{background:var(--ok);color:#fff}
+.acts button.danger{background:var(--bad-soft);color:var(--bad)}
+.row2{display:flex;gap:8px;margin-top:8px}
+.row2 .inp{flex:1}
+.row2 button{padding:0 16px;border-radius:var(--r-sm);background:var(--brand);color:#fff;font-weight:700}
+.seg2{display:flex;background:var(--card);border-radius:999px;padding:4px}
+.seg2 button{flex:1;padding:9px 6px;border-radius:999px;font-weight:600;font-size:13.5px;color:var(--ink-2)}
+.seg2 button.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.rc{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;margin-top:8px}
+.rc .h1{display:flex;gap:10px;align-items:flex-start}
+.rc .h1 b{flex:1;font-weight:600;line-height:1.35}
+.rc .d{font-size:13px;color:var(--ink-2);margin-top:6px;display:flex;align-items:center;gap:6px}
+.rc .d svg.i{width:15px;height:15px}
+.rc .btns{display:flex;gap:8px;margin-top:10px}
+.rc .btns button{padding:7px 12px;border-radius:999px;font-size:13px;font-weight:600;background:#fff}
+.rc .btns button.del{color:var(--bad)}
+.rc.off{opacity:.6}
+
 /* Davomat jadvali */
 .datebar{display:flex;align-items:center;gap:8px;margin-top:4px}
 .datebar .lbl{flex:1;text-align:center;font-weight:700;font-size:16px}
@@ -228,6 +290,7 @@ textarea.inp{min-height:80px;resize:vertical}
 <div class="shade" id="shade" hidden></div>
 <div class="sheet" id="sheet"></div>
 <div class="toast" id="toast"></div>
+<button class="fab" id="fab" hidden></button>
 <input type="file" id="pick" accept="image/*" capture="environment" hidden>
 
 <nav class="nav" id="nav" hidden><div class="in">
@@ -261,6 +324,9 @@ textarea.inp{min-height:80px;resize:vertical}
   <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
   <symbol id="i-run" viewBox="0 0 24 24"><circle cx="14" cy="4.5" r="2"/><path d="M8 21l3-6 3 2v5M6 11l3-3h4l3 4 3 1M11 15l-1-4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
   <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0 5 5l-8.5 8.5a2.1 2.1 0 0 1-3-3z"/><path d="M14.5 6.5l3-3 3 3-3 3"/></symbol>
 </svg>
 
@@ -648,11 +714,219 @@ async function saveMark() {
   toast(p.self ? 'Saqlandi' : 'Saqlandi, ' + p.ism.split(' ')[0] + 'ga xabar ketdi');
 }
 
+
+/* =========================================================
+   Tasklar va Takroriy
+   ========================================================= */
+const TK = { data: null, f: 'ochiq', who: 'all', recs: null };
+const HOLAT = { yangi: 'Yangi', korildi: 'Ko\'rildi', tekshiruvda: 'Tekshiruvda', qaytarildi: 'Qaytarildi', qabul: 'Bajarildi', bekor: 'Bekor' };
+const OPEN = ['yangi', 'korildi', 'qaytarildi'];
+const TERR = Object.assign({}, ERR, { matn: 'Task matnini yozing', kimga: 'Kimga berishni tanlang', sabab: 'Sababini yozing', kunlar: 'Kunlarni tanlang', state: 'Task holati o\'zgargan, yangilang', notfound: 'Task topilmadi' });
+const fmtLate = h => h < 24 ? h + ' soat' : Math.round(h / 24) + ' kun';
+const localIso = d => d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + 'T' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+const atTime = (addDays, h, m) => { const d = new Date(); d.setDate(d.getDate() + addDays); d.setHours(h, m || 0, 0, 0); return localIso(d); };
+
+async function openTasks() {
+  if (!TK.data) $app.innerHTML = header(DATA.user, DATA.sana) + '<div class="sk" style="height:44px"></div><div class="sk" style="height:300px"></div>';
+  try {
+    const [d, r] = await Promise.all([api('tasks'), api('recList')]);
+    if (d.error === 'forbidden') { $app.innerHTML = viewSoonMsg('Tasklar', 'Bu bo\'lim rahbar va menejerlar uchun.'); return; }
+    if (d.error || r.error) throw new Error(d.error || r.error);
+    TK.data = d; TK.recs = r.recs; renderTasks();
+  } catch (e) { $app.innerHTML = viewSoonMsg('Aloqa yo\'q', 'Qayta urinib ko\'ring.'); }
+}
+
+function tkFilter(list) {
+  const f = TK.f;
+  let l = list.filter(t => f === 'ochiq' ? OPEN.includes(t.holat) : f === 'kech' ? t.late : f === 'tek' ? t.holat === 'tekshiruvda' : f === 'done' ? t.holat === 'qabul' : false);
+  if (TK.who !== 'all') l = l.filter(t => t.kimga === TK.who);
+  if (f === 'ochiq' || f === 'kech') l.sort((a, b) => (a.deadline || '9') < (b.deadline || '9') ? -1 : 1);
+  return l;
+}
+
+function renderTasks() {
+  if (TAB !== 'tasklar') return;
+  const all = TK.data.tasks;
+  const n = { ochiq: all.filter(t => OPEN.includes(t.holat)).length, kech: all.filter(t => t.late).length, tek: all.filter(t => t.holat === 'tekshiruvda').length };
+  const fb = (k, l, c) => `<button data-f="${k}" class="${TK.f === k ? 'on' : ''}">${l}${c != null ? `<span class="n">${c}</span>` : ''}</button>`;
+  let body = '';
+  if (TK.f === 'rec') {
+    body = TK.recs.length ? TK.recs.map(r => `<div class="rc ${r.faol ? '' : 'off'}" data-id="${r.id}"><div class="h1">${r.muhim ? '<i class="dot h" style="width:8px;height:8px;border-radius:50%;background:var(--bad);margin-top:7px"></i>' : ''}<b>${esc(r.matn)}</b></div>
+      <div class="d">${ic('repeat')}${esc(r.desc)}</div><div class="d">${ic('users')}${esc(r.kimga.join(', '))}</div>
+      <div class="btns"><button data-a="tog">${r.faol ? 'To\'xtatish' : 'Yoqish'}</button><button class="del" data-a="del">O'chirish</button></div></div>`).join('')
+      : `<div class="empty">Takroriy task yo'q. Masalan: "Kassa hisoboti — har kuni 18:00".</div>`;
+  } else {
+    const users = TK.data.users.filter(u => all.some(t => t.kimga === u.id));
+    const people = `<div class="fchips small" id="tkWho" style="margin-top:10px"><button data-w="all" class="${TK.who === 'all' ? 'on' : ''}">Hammasi</button>${users.map(u => `<button data-w="${u.id}" class="${TK.who === u.id ? 'on' : ''}">${esc(u.ism.split(' ')[0])}</button>`).join('')}</div>`;
+    const list = tkFilter(all);
+    body = people + (list.length ? list.map(t => {
+      const pill = t.late ? `<span class="pill h-late">${fmtLate(t.kechSoat)} kechikdi</span>` : `<span class="pill h-${t.holat}">${HOLAT[t.holat] || t.holat}</span>`;
+      return `<div class="tc" data-id="${t.id}"><div class="top1"><i class="dot ${t.muhim ? 'h' : ''}"></i><div class="mt">${esc(t.matn)}</div><span class="id">#${t.id}</span></div>
+        <div class="meta"><span>${ic('user')}${esc(t.self ? 'O\'zim' : t.kimgaIsm)}</span><span>${ic('clock')}${esc(t.holat === 'qabul' && t.bajarilgan ? t.bajarilgan : t.dl)}</span>${t.rec ? `<span>${ic('repeat')}</span>` : ''}${pill}</div></div>`;
+    }).join('') : `<div class="empty">Bu bo'limda task yo'q.</div>`);
+  }
+  $app.innerHTML = header(DATA.user, DATA.sana) + `<div class="fchips" id="tkF">${fb('ochiq', 'Ochiq', n.ochiq)}${fb('kech', 'Kechikkan', n.kech)}${fb('tek', 'Tekshiruvda', n.tek)}${fb('done', 'Bajarilgan')}${fb('rec', 'Takroriy', TK.recs.length)}</div>${body}<div style="height:70px"></div>`;
+
+  document.getElementById('tkF').onclick = e => { const b = e.target.closest('button'); if (!b) return; TK.f = b.dataset.f; haptic(); renderTasks(); };
+  const w = document.getElementById('tkWho');
+  if (w) w.onclick = e => { const b = e.target.closest('button'); if (!b) return; TK.who = b.dataset.w; haptic(); renderTasks(); };
+  $app.querySelectorAll('.tc').forEach(el => (el.onclick = () => openTask(+el.dataset.id)));
+  $app.querySelectorAll('.rc').forEach(el => (el.onclick = async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.a === 'del' && !b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Rostdan o\'chirilsinmi?'; return; }
+    b.disabled = true;
+    const r = await api(b.dataset.a === 'del' ? 'recDelete' : 'recToggle', { id: el.dataset.id });
+    if (r.error) return toast(TERR[r.error] || 'Xatolik', true);
+    TK.recs = r.recs; renderTasks(); toast(b.dataset.a === 'del' ? 'O\'chirildi' : 'Saqlandi');
+  }));
+  const fab = document.getElementById('fab');
+  fab.hidden = false;
+  fab.innerHTML = TK.f === 'rec' ? `${ic('plus')}Takroriy task` : `${ic('plus')}Yangi task`;
+  fab.onclick = () => (TK.f === 'rec' ? openRecForm() : openTaskForm());
+}
+
+function showSheet(html) {
+  document.getElementById('sheet').innerHTML = '<div class="grab"></div>' + html;
+  const sh = document.getElementById('shade'), s = document.getElementById('sheet');
+  if (!s.classList.contains('on')) { sh.hidden = false; requestAnimationFrame(() => { sh.classList.add('on'); s.classList.add('on'); }); sh.onclick = closeSheet; }
+}
+
+/* ---------- Task kartasi ---------- */
+async function openTask(id) {
+  showSheet('<div class="sk" style="height:220px;margin:0"></div>'); haptic();
+  const r = await api('taskGet', { id });
+  if (r.error) { closeSheet(); return toast(TERR[r.error] || 'Xatolik', true); }
+  drawTask(r.task);
+}
+
+function drawTask(t) {
+  const open = OPEN.includes(t.holat);
+  const status = t.late ? `<span class="pill h-late">${fmtLate(t.kechSoat)} kechikdi</span>` : `<span class="pill h-${t.holat}">${HOLAT[t.holat] || t.holat}</span>`;
+  const proofLbl = { photo: 'Foto', text: 'Izoh', none: 'Kerak emas' }[t.isbot] || 'Kerak emas';
+  let html = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="id" style="color:var(--ink-3);font-size:13px">#${t.id}${t.rec ? ' · takroriy' : ''}</span><span style="flex:1"></span>${status}</div>
+    <div class="bigtext">${t.muhim ? '<span style="color:var(--bad)">● </span>' : ''}${esc(t.matn)}</div>
+    <div class="info"><div><span>Ijrochi</span><b>${esc(t.self ? 'O\'zim' : t.kimgaIsm)}</b></div>${t.self ? '' : `<div><span>Bergan</span><b>${esc(t.bergan)}</b></div>`}
+    <div><span>Muddat</span><b>${esc(t.dl)}</b></div><div><span>Isbot</span><b>${proofLbl}</b></div>
+    ${t.bajarilgan ? `<div><span>Bajarildi</span><b>${esc(t.bajarilgan)}${t.vaqtida === false ? ' · kechikib' : t.vaqtida ? ' · vaqtida' : ''}</b></div>` : ''}</div>`;
+  if (t.qaytarishSababi && t.holat === 'qaytarildi') html += `<div class="proof"><div class="pt">Qaytarish sababi</div>${esc(t.qaytarishSababi)}</div>`;
+  if (t.rasm || t.isbotIzoh) html += `<div class="proof"><div class="pt">Isbot</div>${t.isbotIzoh ? esc(t.isbotIzoh) : ''}${t.rasm ? `<img src="${t.rasm}" alt="Isbot">` : ''}</div>`;
+  if (t.izohlar.length) html += `<div class="cmts"><div class="fld" style="margin-top:0"><label>Izohlar</label></div>${t.izohlar.map(c => `<div class="cmt"><small>${esc(c.kim)} · ${esc(c.vaqt)}${c.turi === 'tosiq' ? ' · to\'siq' : ''}</small>${esc(c.matn)}</div>`).join('')}</div>`;
+
+  const acts = [];
+  if (t.canManage && t.holat === 'tekshiruvda') acts.push(`<button class="ok" data-a="accept">Qabul qilish</button>`, `<button data-a="returnForm">Qaytarish</button>`);
+  if (t.canManage && open && !t.self) acts.push(`<button data-a="remind">Eslatish</button>`);
+  if (t.canManage && open) acts.push(`<button data-a="extForm">Muddat</button>`, `<button class="danger" data-a="cancel">Bekor qilish</button>`);
+  if (acts.length) html += `<div class="acts" id="tActs">${acts.join('')}</div>`;
+  html += `<div id="tForm"></div>`;
+  if (t.holat !== 'qabul' && t.holat !== 'bekor') html += `<div class="fld"><label>Izoh yozish</label><div class="row2"><input class="inp" id="tCmt" placeholder="Xodimga xabar boradi"><button id="tCmtB">${ic('right')}</button></div></div>`;
+  showSheet(html);
+
+  const run = async (act, extra, okMsg) => {
+    const r = await api('taskAction', Object.assign({ id: t.id, act }, extra || {}));
+    if (r.error) return toast(TERR[r.error] || 'Xatolik', true);
+    toast(okMsg); drawTask(r.task); refreshTasksQuiet();
+  };
+  const A = document.getElementById('tActs');
+  if (A) A.onclick = async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const a = b.dataset.a, F = document.getElementById('tForm');
+    if (a === 'returnForm') { F.innerHTML = `<div class="fld"><label>Qaytarish sababi</label><textarea class="inp" id="tSab" placeholder="Nima to'g'rilanishi kerak?"></textarea></div><button class="save" id="tSabB">Qaytarish</button>`;
+      document.getElementById('tSabB').onclick = () => run('return', { sabab: document.getElementById('tSab').value }, 'Qaytarildi'); return; }
+    if (a === 'extForm') { F.innerHTML = `<div class="fld"><label>Yangi muddat</label><div class="chips" id="tExtC"><button data-v="${atTime(0, 18)}">Bugun 18:00</button><button data-v="${atTime(1, 10)}">Ertaga 10:00</button><button data-v="${atTime(1, 18)}">Ertaga 18:00</button></div>
+        <input type="datetime-local" class="inp" id="tExt" style="margin-top:8px" value="${t.deadline}"></div><button class="save" id="tExtB">Saqlash</button>`;
+      document.getElementById('tExtC').onclick = e2 => { const c = e2.target.closest('button'); if (c) document.getElementById('tExt').value = c.dataset.v; };
+      document.getElementById('tExtB').onclick = () => run('extend', { deadline: document.getElementById('tExt').value }, 'Muddat o\'zgartirildi'); return; }
+    if (a === 'cancel' && !b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Rostdan bekor qilinsinmi?'; return; }
+    b.disabled = true;
+    run(a, {}, { accept: 'Qabul qilindi', remind: 'Eslatma yuborildi', cancel: 'Bekor qilindi' }[a]);
+  };
+  const cb = document.getElementById('tCmtB');
+  if (cb) cb.onclick = () => { const v = document.getElementById('tCmt').value.trim(); if (!v) return; cb.disabled = true; run('comment', { matn: v }, 'Izoh yuborildi'); };
+}
+
+async function refreshTasksQuiet() {
+  try { const d = await api('tasks'); if (!d.error) { TK.data = d; renderTasks(); } } catch (e) {}
+}
+
+/* ---------- Yangi task ---------- */
+let NF = null;
+function whoChips(sel, withMe) {
+  return TK.data.users.filter(u => withMe || u.id !== TK.data.me).map(u => `<button data-u="${u.id}" class="${sel.includes(u.id) ? 'sel' : ''}">${u.id === TK.data.me ? 'O\'zim' : esc(u.ism.split(' ')[0])}</button>`).join('');
+}
+function openTaskForm() {
+  NF = { matn: '', kimga: TK.who !== 'all' ? [TK.who] : [], dl: atTime(0, 18), prio: 'n', isbot: 'none' };
+  drawTaskForm(); haptic();
+}
+function drawTaskForm() {
+  const dlOpts = [['Bugun 18:00', atTime(0, 18)], ['Ertaga 10:00', atTime(1, 10)], ['Ertaga 18:00', atTime(1, 18)], ['Muddatsiz', '']];
+  const onlyMe = NF.kimga.length === 1 && NF.kimga[0] === TK.data.me;
+  showSheet(`<div class="bigtext" style="margin-bottom:4px">Yangi task</div>
+    <div class="fld"><label>Nima qilish kerak?</label><textarea class="inp" id="nfM" placeholder="Masalan: Alisher akadan qarzni undirish">${esc(NF.matn)}</textarea></div>
+    <div class="fld"><label>Kimga (bir nechtasini tanlash mumkin)</label><div class="chips" id="nfK">${whoChips(NF.kimga, true)}</div></div>
+    <div class="fld"><label>Muddat</label><div class="chips" id="nfD">${dlOpts.map(o => `<button data-v="${o[1]}" class="${NF.dl === o[1] ? 'sel' : ''}">${o[0]}</button>`).join('')}</div>
+      ${NF.dl !== '' ? `<input type="datetime-local" class="inp" id="nfDt" style="margin-top:8px" value="${NF.dl}">` : ''}</div>
+    <div class="fld"><label>Muhimlik</label><div class="seg2" id="nfP"><button data-v="n" class="${NF.prio === 'n' ? 'on' : ''}">Oddiy</button><button data-v="h" class="${NF.prio === 'h' ? 'on' : ''}">Muhim</button></div></div>
+    ${onlyMe ? '' : `<div class="fld"><label>Isbot</label><div class="seg2" id="nfI"><button data-v="none" class="${NF.isbot === 'none' ? 'on' : ''}">Kerak emas</button><button data-v="photo" class="${NF.isbot === 'photo' ? 'on' : ''}">Foto</button><button data-v="text" class="${NF.isbot === 'text' ? 'on' : ''}">Izoh</button></div></div>`}
+    <button class="save" id="nfS">Yuborish</button>`);
+  const g = id => document.getElementById(id);
+  g('nfM').oninput = () => (NF.matn = g('nfM').value);
+  g('nfK').onclick = e => { const b = e.target.closest('button'); if (!b) return; const u = b.dataset.u; NF.kimga = NF.kimga.includes(u) ? NF.kimga.filter(x => x !== u) : NF.kimga.concat(u); haptic(); drawTaskForm(); };
+  g('nfD').onclick = e => { const b = e.target.closest('button'); if (!b) return; NF.dl = b.dataset.v; drawTaskForm(); };
+  if (g('nfDt')) g('nfDt').onchange = () => (NF.dl = g('nfDt').value);
+  g('nfP').onclick = e => { const b = e.target.closest('button'); if (!b) return; NF.prio = b.dataset.v; drawTaskForm(); };
+  if (g('nfI')) g('nfI').onclick = e => { const b = e.target.closest('button'); if (!b) return; NF.isbot = b.dataset.v; drawTaskForm(); };
+  g('nfS').onclick = async () => {
+    if (!NF.matn.trim()) return toast(TERR.matn, true);
+    if (!NF.kimga.length) return toast(TERR.kimga, true);
+    g('nfS').disabled = true; g('nfS').textContent = 'Yuborilmoqda…';
+    const r = await api('taskCreate', { matn: NF.matn, kimga: NF.kimga, deadline: NF.dl, prioritet: NF.prio, isbot: NF.isbot });
+    if (r.error) { g('nfS').disabled = false; g('nfS').textContent = 'Yuborish'; return toast(TERR[r.error] || 'Xatolik', true); }
+    closeSheet(); toast(r.ids.length > 1 ? r.ids.length + ' ta task yuborildi' : 'Task #' + r.ids[0] + ' yuborildi');
+    TK.f = 'ochiq'; refreshTasksQuiet();
+  };
+}
+
+/* ---------- Takroriy task ---------- */
+let RF = null;
+const WDN = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
+function openRecForm() { RF = { matn: '', kimga: [], vaqt: '18:00', davr: 'kunlik', kunlar: [], prio: 'n', isbot: 'none' }; drawRecForm(); haptic(); }
+function drawRecForm() {
+  let days = '';
+  if (RF.davr === 'haftalik') days = `<div class="chips" id="rfW" style="margin-top:8px">${WDN.map((d, i) => `<button data-v="${i + 1}" class="${RF.kunlar.includes(String(i + 1)) ? 'sel' : ''}">${d}</button>`).join('')}</div>`;
+  if (RF.davr === 'oylik') days = `<input type="number" min="1" max="31" class="inp" id="rfM" style="margin-top:8px" placeholder="Oyning nechanchi sanasi? (1–31)" value="${RF.kunlar[0] || ''}">`;
+  showSheet(`<div class="bigtext" style="margin-bottom:4px">Takroriy task</div>
+    <div class="fld"><label>Nima qilish kerak?</label><textarea class="inp" id="rfT" placeholder="Masalan: Kassa hisobotini yuborish">${esc(RF.matn)}</textarea></div>
+    <div class="fld"><label>Kimga</label><div class="chips" id="rfK">${whoChips(RF.kimga, true)}</div></div>
+    <div class="fld"><label>Qachon</label><div class="seg2" id="rfP"><button data-v="kunlik" class="${RF.davr === 'kunlik' ? 'on' : ''}">Har kuni</button><button data-v="haftalik" class="${RF.davr === 'haftalik' ? 'on' : ''}">Hafta kunlari</button><button data-v="oylik" class="${RF.davr === 'oylik' ? 'on' : ''}">Oy sanasi</button></div>${days}
+      <input type="time" class="inp" id="rfV" style="margin-top:8px" value="${RF.vaqt}"><div class="hint">Shu vaqt task muddati bo'ladi. Task har kuni ertalab avtomatik yaratiladi.</div></div>
+    <div class="fld"><label>Muhimlik</label><div class="seg2" id="rfPr"><button data-v="n" class="${RF.prio === 'n' ? 'on' : ''}">Oddiy</button><button data-v="h" class="${RF.prio === 'h' ? 'on' : ''}">Muhim</button></div></div>
+    <div class="fld"><label>Isbot</label><div class="seg2" id="rfI"><button data-v="none" class="${RF.isbot === 'none' ? 'on' : ''}">Kerak emas</button><button data-v="photo" class="${RF.isbot === 'photo' ? 'on' : ''}">Foto</button><button data-v="text" class="${RF.isbot === 'text' ? 'on' : ''}">Izoh</button></div></div>
+    <button class="save" id="rfS">Saqlash</button>`);
+  const g = id => document.getElementById(id);
+  const seg = (id, key) => (g(id).onclick = e => { const b = e.target.closest('button'); if (!b) return; RF[key] = b.dataset.v; if (key === 'davr') RF.kunlar = []; drawRecForm(); });
+  g('rfT').oninput = () => (RF.matn = g('rfT').value);
+  g('rfV').onchange = () => (RF.vaqt = g('rfV').value);
+  g('rfK').onclick = e => { const b = e.target.closest('button'); if (!b) return; const u = b.dataset.u; RF.kimga = RF.kimga.includes(u) ? RF.kimga.filter(x => x !== u) : RF.kimga.concat(u); drawRecForm(); };
+  seg('rfP', 'davr'); seg('rfPr', 'prio'); seg('rfI', 'isbot');
+  if (g('rfW')) g('rfW').onclick = e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.v; RF.kunlar = RF.kunlar.includes(v) ? RF.kunlar.filter(x => x !== v) : RF.kunlar.concat(v).sort(); drawRecForm(); };
+  if (g('rfM')) g('rfM').oninput = () => (RF.kunlar = g('rfM').value ? [String(Math.min(31, Math.max(1, +g('rfM').value)))] : []);
+  g('rfS').onclick = async () => {
+    if (!RF.matn.trim()) return toast(TERR.matn, true);
+    if (!RF.kimga.length) return toast(TERR.kimga, true);
+    if (RF.davr !== 'kunlik' && !RF.kunlar.length) return toast(TERR.kunlar, true);
+    g('rfS').disabled = true; g('rfS').textContent = 'Saqlanmoqda…';
+    const r = await api('recCreate', { matn: RF.matn, kimga: RF.kimga, vaqt: RF.vaqt, davr: RF.davr, kunlar: RF.kunlar, prioritet: RF.prio, isbot: RF.isbot });
+    if (r.error) { g('rfS').disabled = false; g('rfS').textContent = 'Saqlash'; return toast(TERR[r.error] || 'Xatolik', true); }
+    TK.recs = r.recs; closeSheet(); renderTasks(); toast(r.note || 'Saqlandi');
+  };
+}
+
 /* ---------- Chizish va hodisalar ---------- */
 function render() {
+  document.getElementById('fab').hidden = true;
   if (TAB === 'panel') $app.innerHTML = viewPanel(DATA);
   if (TAB === 'davomat') return openAtt();
-  if (TAB === 'tasklar') $app.innerHTML = viewSoon('Tasklar');
+  if (TAB === 'tasklar') return openTasks();
   if (TAB === 'maosh') $app.innerHTML = viewSoon('Maosh');
   bind();
 }
@@ -720,9 +994,45 @@ async function load() {
 }
 
 /* ---------- Namuna ma'lumot (Telegram'dan tashqarida) ---------- */
+
+let DT = null;
+function demoTasks(name, x) {
+  if (!DT) {
+    const now = Date.now(), iso = ms => localIso(new Date(ms)), dl = ms => { const d = new Date(ms); return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+    const T = (id, matn, kimga, ism, off, holat, muhim, extra) => Object.assign({ id, matn, kimga, kimgaIsm: ism, bergan: 'Kamerachi', self: kimga === '1', deadline: iso(now + off * 36e5), dl: dl(now + off * 36e5), muhim, isbot: 'photo', holat, late: OPEN.includes(holat) && off < 0, kechSoat: off < 0 ? -off : 0, bajarilgan: '', vaqtida: null, rec: '' }, extra || {});
+    DT = { me: '1', rahbar: true, users: [{ id: '1', ism: 'Kamerachi' }, { id: '2', ism: 'Javohir Nematov' }, { id: '4', ism: 'Yormuhammad' }, { id: '5', ism: 'Lola Rustamovna' }, { id: '6', ism: 'Doston Mirzokarimov' }],
+      tasks: [T(12, 'Ertalab kamida 3 ta qarzdorga qo\'ng\'iroq qilish', '2', 'Javohir Nematov', 3, 'korildi', false),
+        T(11, 'Olx ga yangi ikkita tovar joylashtirish', '6', 'Doston Mirzokarimov', -2, 'tekshiruvda', true, { bajarilgan: dl(now - 3e5), vaqtida: false }),
+        T(10, 'Baxtiyor ustanovshikdan ketgan narsalar hisobini olib, to\'lovni olish', '5', 'Lola Rustamovna', -40, 'yangi', true),
+        T(9, 'Noutbukni egasiga topshirish', '4', 'Yormuhammad', -5, 'qaytarildi', false),
+        T(8, 'Kassa hisobotini yuborish', '5', 'Lola Rustamovna', 6, 'yangi', false, { rec: '1' }),
+        T(7, 'Vitrinadagi kameralarni yangilash', '4', 'Yormuhammad', -26, 'qabul', false, { bajarilgan: dl(now - 27 * 36e5), vaqtida: true })],
+      recs: [{ id: '1', matn: 'Kassa hisobotini yuborish', desc: 'Har kuni 18:00', faol: true, kimga: ['Lola Rustamovna'], muhim: false, isbot: 'photo' }] };
+  }
+  const f = id => DT.tasks.find(t => t.id === +id);
+  if (name === 'tasks') return { me: DT.me, rahbar: true, users: DT.users, tasks: DT.tasks };
+  if (name === 'recList') return { recs: DT.recs, users: DT.users };
+  if (name === 'taskGet' || name === 'taskAction') {
+    const t = f(x.id);
+    if (name === 'taskAction') {
+      if (x.act === 'accept') t.holat = 'qabul';
+      if (x.act === 'return') { t.holat = 'qaytarildi'; t.qaytarishSababi = x.sabab; }
+      if (x.act === 'cancel') t.holat = 'bekor';
+      if (x.act === 'comment') (t.izohlar = t.izohlar || []).push({ kim: 'Kamerachi', turi: 'izoh', matn: x.matn, vaqt: 'hozir' });
+      if (x.act === 'extend') { t.deadline = x.deadline; t.dl = x.deadline.slice(8, 10) + '.' + x.deadline.slice(5, 7) + ' ' + x.deadline.slice(11); t.late = false; }
+    }
+    return { task: Object.assign({ canManage: true, izohlar: [], isbotIzoh: t.holat === 'tekshiruvda' ? 'Ikkalasi joylandi, havolalar guruhda' : '', rasm: '' }, t) };
+  }
+  if (name === 'taskCreate') { const ids = x.kimga.map((k, i) => { const id = 13 + DT.tasks.length + i; DT.tasks.unshift({ id, matn: x.matn, kimga: k, kimgaIsm: (DT.users.find(u => u.id === k) || {}).ism, bergan: 'Kamerachi', self: k === '1', deadline: x.deadline, dl: x.deadline ? x.deadline.slice(8, 10) + '.' + x.deadline.slice(5, 7) + ' ' + x.deadline.slice(11) : 'Muddatsiz', muhim: x.prioritet === 'h', isbot: x.isbot, holat: 'yangi', late: false, kechSoat: 0, bajarilgan: '', vaqtida: null, rec: '' }); return id; }); return { ok: true, ids }; }
+  if (name === 'recCreate') { DT.recs.push({ id: String(DT.recs.length + 1), matn: x.matn, desc: (x.davr === 'kunlik' ? 'Har kuni ' : x.davr === 'oylik' ? 'Har oyning ' + x.kunlar[0] + '-sanasi ' : x.kunlar.map(d => WDN[d - 1]).join(', ') + ' ') + x.vaqt, faol: true, kimga: x.kimga.map(k => (DT.users.find(u => u.id === k) || {}).ism), muhim: x.prioritet === 'h', isbot: x.isbot }); return { recs: DT.recs, note: 'Birinchi task ertaga ertalab yaratiladi.' }; }
+  if (name === 'recToggle') { const r = DT.recs.find(r => r.id === x.id); r.faol = !r.faol; return { recs: DT.recs }; }
+  if (name === 'recDelete') { DT.recs = DT.recs.filter(r => r.id !== x.id); return { recs: DT.recs }; }
+}
+
 let DEMO_ATT = null;
 function demoData(name, x) {
   if (name && name.indexOf('att') === 0) return demoAtt(name, x);
+  if (name && (name.indexOf('task') === 0 || name.indexOf('rec') === 0)) return demoTasks(name, x);
   return demoDash();
 }
 function demoAtt(name, x) {
