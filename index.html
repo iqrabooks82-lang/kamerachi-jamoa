@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Kamerachi Jamoa</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#01499E">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -186,6 +190,15 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .disc b{font-size:32px;font-weight:800;color:var(--brand);letter-spacing:-1px}
 .disc span{color:var(--ink-2);font-size:14px}
 .card .tc{background:#fff}
+.login{max-width:360px;margin:0 auto;padding:56px 8px 24px;text-align:center}
+.login img{width:84px;height:84px;border-radius:50%}
+.login h1{font-size:24px;font-weight:800;margin:14px 0 6px;color:var(--ink)}
+.login p{color:var(--ink-2);font-size:14.5px;line-height:1.45;margin:0 0 20px}
+.login .code{text-align:center;font-size:28px;letter-spacing:10px;font-weight:700;padding:14px}
+.login .err{color:var(--bad);font-size:13.5px;min-height:20px;margin-top:10px}
+.login .botlink{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:var(--brand);font-weight:600;text-decoration:none}
+.login .botlink[hidden]{display:none}
+.login .hint{margin-top:18px}
 #mySub{margin-bottom:12px}
 .upd{font-size:12px;color:var(--ink-3);text-align:center;margin-top:16px}
 
@@ -400,7 +413,13 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxF7jq6-DMHDQcES05c2ZK7
 const LOGO = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzAxNDk5RSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ1LjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjMiLz48Y2lyY2xlIGN4PSI1MC42IiBjeT0iNDIuNSIgcj0iMTUuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMuNiIvPjxjaXJjbGUgY3g9IjUwLjYiIGN5PSI0Mi41IiByPSI4LjgiIGZpbGw9IiNGMzdDMjAiLz48cGF0aCBkPSJNMjkuNiAyNy42YTI2IDI2IDAgMCAwIDAgMjkuOGw0LjQtMy4yYTIxIDIxIDAgMCAxIDAtMjMuNHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzEuNiAyNy42YTI2IDI2IDAgMCAxIDAgMjkuOGwtNC40LTMuMmEyMSAyMSAwIDAgMCAwLTIzLjR6IiBmaWxsPSIjZmZmIi8+PHRleHQgeD0iNTAiIHk9Ijc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMS4yIiBsZXR0ZXItc3BhY2luZz0iLjMiPjx0c3BhbiBmaWxsPSIjZmZmIj5LQU1FUkE8L3RzcGFuPjx0c3BhbiBmaWxsPSIjMTBENkY5Ij5DSEk8L3RzcGFuPjwvdGV4dD48L3N2Zz4K';
 
 const tg = window.Telegram && Telegram.WebApp;
-const DEMO = !tg || !tg.initData || API_URL.indexOf('__') === 0;
+const IN_TG = !!(tg && tg.initData);
+// Namuna rejimi: manzil sozlanmagan (lokal fayl) yoki ?demo / ?xodim bilan ochilgan
+const DEMO = API_URL.indexOf('__') === 0 || (!IN_TG && /[?&](demo|xodim)/.test(location.search));
+// Telefon ilovasi (APK/brauzer): Telegram yo'q — bot bergan kod bilan kiriladi, kalit telefonda saqlanadi
+const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+let TOKEN = store.get('kj_token');
 if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#ffffff'); tg.setBackgroundColor('#ffffff'); } catch (e) {} }
 
 const $app = document.getElementById('app');
@@ -425,9 +444,44 @@ async function api(name, extra) {
   const r = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // oddiy so'rov — CORS preflight bo'lmaydi
-    body: JSON.stringify(Object.assign({ api: name, initData: tg.initData }, extra || {})),
+    body: JSON.stringify(Object.assign({ api: name }, IN_TG ? { initData: tg.initData } : { token: TOKEN }, extra || {})),
   });
-  return r.json();
+  const d = await r.json();
+  if (!IN_TG && (d.error === 'auth' || d.error === 'nouser') && name !== 'login') { logout(d.error === 'nouser'); return new Promise(() => {}); }
+  return d;
+}
+
+/* ---------- Ilovaga kirish (Telegram tashqarisida) ---------- */
+function logout(blocked) {
+  TOKEN = null; store.set('kj_token', null); DATA = null;
+  showLogin(blocked ? 'Kirish yopilgan. Rahbarga murojaat qiling.' : '');
+}
+async function showLogin(note) {
+  document.getElementById('nav').hidden = true;
+  document.getElementById('fab').hidden = true;
+  $app.innerHTML = `<div class="login">
+    <img src="${LOGO}" alt="Kamerachi">
+    <h1>Kamerachi Jamoa</h1>
+    <p>Telegram'da botga <b>/kirish</b> deb yozing va kelgan 6 xonali kodni kiriting.</p>
+    <input class="inp code" id="lgC" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
+    <button class="save" id="lgB">Kirish</button>
+    <div class="err" id="lgE">${esc(note || '')}</div>
+    <a class="botlink" id="lgBot" hidden target="_blank" rel="noopener">${ic('right')}Botni ochish</a>
+    <div class="hint">Bir marta kirsangiz, ilova 30 kun eslab qoladi.</div>
+  </div>`;
+  const C = document.getElementById('lgC'), B = document.getElementById('lgB'), E = document.getElementById('lgE');
+  C.oninput = () => { C.value = C.value.replace(/\D/g, '').slice(0, 6); if (C.value.length === 6) B.click(); };
+  B.onclick = async () => {
+    if (C.value.length !== 6) { E.textContent = '6 xonali kodni kiriting'; return; }
+    B.disabled = true; B.textContent = 'Tekshirilmoqda…'; E.textContent = '';
+    try {
+      const r = await api('login', { code: C.value });
+      if (r.token) { TOKEN = r.token; store.set('kj_token', r.token); return load(); }
+      E.textContent = { code: 'Kod noto\'g\'ri yoki eskirgan. Botdan yangisini oling.', toomany: 'Juda ko\'p urinish. 10 daqiqadan keyin qayta urinib ko\'ring.', nouser: 'Siz faol xodim emassiz. Rahbarga murojaat qiling.' }[r.error] || 'Xatolik, qayta urinib ko\'ring';
+    } catch (e) { E.textContent = 'Internet aloqasini tekshiring'; }
+    B.disabled = false; B.textContent = 'Kirish'; C.value = ''; C.focus();
+  };
+  try { const i = await api('appInfo'); if (i.bot) { const a = document.getElementById('lgBot'); if (a) { a.href = 'https://t.me/' + i.bot; a.hidden = false; } } } catch (e) {}
 }
 
 /* ---------- Ekranlar ---------- */
@@ -477,7 +531,7 @@ function viewPanel(d) {
   ${chartCard(d.grafik)}
   ${rankCard(d.xodimlar)}
   ${d.maosh ? moneyCard(d.maosh) : ''}
-  <div class="upd">Yangilandi: ${new Date().toTimeString().slice(0, 5)} · <button id="re" style="color:var(--brand);font-weight:600">yangilash</button></div>`;
+  <div class="upd">Yangilandi: ${new Date().toTimeString().slice(0, 5)} · <button id="re" style="color:var(--brand);font-weight:600">yangilash</button>${!IN_TG && !DEMO ? ' · <button class="lo" style="color:var(--ink-3)">chiqish</button>' : ''}</div>`;
 }
 
 function attCard(a) {
@@ -1371,7 +1425,7 @@ function viewMyHome(h) {
       <button id="qAdv" ${h.sal ? '' : 'disabled style="opacity:.5"'}><span class="ic" style="background:var(--accent-soft);color:var(--accent)">${ic('cash')}</span>Avans so'rash</button>
     </div>${pend.join('')}
   </div>
-  <div class="upd">Yangilandi: ${new Date().toTimeString().slice(0, 5)}</div>`;
+  <div class="upd">Yangilandi: ${new Date().toTimeString().slice(0, 5)}${!IN_TG && !DEMO ? ' · <button class="lo" style="color:var(--ink-3)">chiqish</button>' : ''}</div>`;
 
   $app.querySelectorAll('.tc').forEach(el => (el.onclick = () => openTask(+el.dataset.id)));
   const at = document.getElementById('allT'); if (at) at.onclick = () => { MY.tf = 'ochiq'; goMy('tasks'); };
@@ -1590,6 +1644,7 @@ function bind() {
   if (re) re.onclick = load;
 }
 
+document.addEventListener('click', e => { const b = e.target.closest('.lo'); if (!b) return; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'rostdan chiqasizmi?'; return; } logout(); });
 const haptic = () => { try { tg && tg.HapticFeedback.selectionChanged(); } catch (e) {} };
 
 document.getElementById('nav').onclick = e => {
@@ -1607,20 +1662,23 @@ function showError(title, text, retry) {
 }
 
 async function load() {
+  if (!DEMO && !IN_TG && !TOKEN) return showLogin();
   if (!DATA) $app.innerHTML = `<div class="top"><img src="${LOGO}" alt=""><div class="who"><div class="hi">Yuklanmoqda…</div></div></div>
     <div class="sk" style="height:150px;border-radius:24px"></div><div class="sk" style="height:90px"></div><div class="sk" style="height:220px"></div>`;
   try {
     const d = await api('dashboard');
-    if (d.error === 'forbidden') return loadStaff();
+    if (d.error === 'forbidden') return await loadStaff();
     if (d.error === 'nouser') return showError('Ro\'yxatdan o\'tmagansiz', 'Avval botda /start bosing va rahbar tasdiqlashini kuting.');
     if (d.error === 'auth') return showError('Kirish tasdiqlanmadi', 'Mini App\'ni botdagi tugma orqali qayta oching.', true);
     if (d.error) return showError('Xatolik', 'Server javob bermadi. Birozdan keyin qayta urinib ko\'ring.', true);
     DATA = d; ROLE = 'leader';
     buildNav(); render();
   } catch (e) {
+    if (e.message === 'auth') return;
     showError('Aloqa yo\'q', 'Internet aloqasini tekshirib, qayta urinib ko\'ring.', true);
   }
 }
+if ('serviceWorker' in navigator && !IN_TG && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 
 /* ---------- Namuna ma'lumot (Telegram'dan tashqarida) ---------- */
 
