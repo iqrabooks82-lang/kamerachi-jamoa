@@ -190,6 +190,21 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .disc b{font-size:32px;font-weight:800;color:var(--brand);letter-spacing:-1px}
 .disc span{color:var(--ink-2);font-size:14px}
 .card .tc{background:#fff}
+/* Ochilish oynasi (telefon ilovasi) */
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  background:linear-gradient(160deg,#3A95FF 0%,#1F5FCB 45%,#0B2685 80%,#061A6E 100%);color:#fff;transition:opacity .45s ease}
+#splash[hidden]{display:none}
+#splash.out{opacity:0;pointer-events:none}
+#splash img{width:min(52vw,230px);height:auto;border-radius:50%;box-shadow:0 18px 50px rgba(0,10,60,.35);animation:spIn .6s ease both}
+#splash .sp-hi{font-size:22px;font-weight:600;text-align:center;line-height:1.35;padding:0 24px;animation:spIn .6s .15s ease both}
+#splash .sp-hi b{font-weight:600}
+#splash .sp-hi span{display:block;font-size:28px;font-weight:800}
+#splash .sp-dots{display:flex;gap:7px}
+#splash .sp-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85);animation:spDot 1s infinite ease-in-out}
+#splash .sp-dots i:nth-child(2){animation-delay:.15s}#splash .sp-dots i:nth-child(3){animation-delay:.3s}
+#splash .sp-foot{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom));font-size:13px;opacity:.7;letter-spacing:.5px}
+@keyframes spIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spDot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 .login{max-width:360px;margin:0 auto;padding:56px 8px 24px;text-align:center}
 .login img{width:84px;height:84px;border-radius:50%}
 .login h1{font-size:24px;font-weight:800;margin:14px 0 6px;color:var(--ink)}
@@ -366,6 +381,7 @@ textarea.inp{min-height:80px;resize:vertical}
 </style>
 </head>
 <body>
+<div id="splash" hidden><img id="spLogo" alt="Kamerachi"><div class="sp-hi"><b id="spHi">Assalomu alaykum!</b><span id="spName"></span></div><div class="sp-dots"><i></i><i></i><i></i></div><div class="sp-foot">Kamerachi Jamoa</div></div>
 <div id="app"></div>
 <div class="shade" id="shade" hidden></div>
 <div class="sheet" id="sheet"></div>
@@ -420,6 +436,22 @@ const DEMO = API_URL.indexOf('__') === 0 || (!IN_TG && /[?&](demo|xodim)/.test(l
 const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
 let TOKEN = store.get('kj_token');
+
+/* Ochilish oynasi: faqat telefon ilovasi / brauzerda (Telegram ichida emas) */
+const SPLASH_T0 = Date.now();
+function showSplash() {
+  const sp = document.getElementById('splash');
+  document.getElementById('spLogo').src = LOGO;
+  const ism = store.get('kj_ism');
+  if (ism) { document.getElementById('spHi').textContent = 'Assalomu alaykum,'; document.getElementById('spName').textContent = ism.split(' ')[0] + '!'; }
+  sp.hidden = false;
+}
+function hideSplash() {
+  const sp = document.getElementById('splash');
+  if (sp.hidden || sp.classList.contains('out')) return;
+  setTimeout(() => { sp.classList.add('out'); setTimeout(() => (sp.hidden = true), 500); }, Math.max(0, 1300 - (Date.now() - SPLASH_T0)));
+}
+if (!IN_TG && !DEMO) showSplash();
 if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#ffffff'); tg.setBackgroundColor('#ffffff'); } catch (e) {} }
 
 const $app = document.getElementById('app');
@@ -457,6 +489,7 @@ function logout(blocked) {
   showLogin(blocked ? 'Kirish yopilgan. Rahbarga murojaat qiling.' : '');
 }
 async function showLogin(note) {
+  hideSplash();
   document.getElementById('nav').hidden = true;
   document.getElementById('fab').hidden = true;
   $app.innerHTML = `<div class="login">
@@ -476,7 +509,7 @@ async function showLogin(note) {
     B.disabled = true; B.textContent = 'Tekshirilmoqda…'; E.textContent = '';
     try {
       const r = await api('login', { code: C.value });
-      if (r.token) { TOKEN = r.token; store.set('kj_token', r.token); return load(); }
+      if (r.token) { TOKEN = r.token; store.set('kj_token', r.token); store.set('kj_ism', r.ism || ''); return load(); }
       E.textContent = { code: 'Kod noto\'g\'ri yoki eskirgan. Botdan yangisini oling.', toomany: 'Juda ko\'p urinish. 10 daqiqadan keyin qayta urinib ko\'ring.', nouser: 'Siz faol xodim emassiz. Rahbarga murojaat qiling.' }[r.error] || 'Xatolik, qayta urinib ko\'ring';
     } catch (e) { E.textContent = 'Internet aloqasini tekshiring'; }
     B.disabled = false; B.textContent = 'Kirish'; C.value = ''; C.focus();
@@ -1327,8 +1360,8 @@ async function loadStaff() {
   const h = await api('myHome');
   if (h.error) return showError('Xatolik', 'Server javob bermadi. Birozdan keyin qayta urinib ko\'ring.', true);
   ROLE = 'staff'; TAB = 'me-home'; MY.v = 'home'; MY.home = h;
-  DATA = { user: h.user, sana: h.sana };
-  buildNav(); render();
+  DATA = { user: h.user, sana: h.sana }; store.set('kj_ism', h.user.ism);
+  buildNav(); render(); hideSplash();
 }
 
 const myActive = v => (TAB === 'men' && MY.v === v) || TAB === 'me-' + v;
@@ -1655,6 +1688,7 @@ document.getElementById('nav').onclick = e => {
 };
 
 function showError(title, text, retry) {
+  hideSplash();
   document.getElementById('nav').hidden = true;
   $app.innerHTML = `<div class="msg"><div class="ring">${ic(retry ? 'refresh' : 'lock')}</div><b>${title}</b>${text}
     ${retry ? `<br><button class="btn" id="rt">${ic('refresh')}Qayta urinish</button>` : ''}</div>`;
@@ -1671,8 +1705,8 @@ async function load() {
     if (d.error === 'nouser') return showError('Ro\'yxatdan o\'tmagansiz', 'Avval botda /start bosing va rahbar tasdiqlashini kuting.');
     if (d.error === 'auth') return showError('Kirish tasdiqlanmadi', 'Mini App\'ni botdagi tugma orqali qayta oching.', true);
     if (d.error) return showError('Xatolik', 'Server javob bermadi. Birozdan keyin qayta urinib ko\'ring.', true);
-    DATA = d; ROLE = 'leader';
-    buildNav(); render();
+    DATA = d; ROLE = 'leader'; store.set('kj_ism', d.user.ism);
+    buildNav(); render(); hideSplash();
   } catch (e) {
     if (e.message === 'auth') return;
     showError('Aloqa yo\'q', 'Internet aloqasini tekshirib, qayta urinib ko\'ring.', true);
