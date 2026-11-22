@@ -169,6 +169,51 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .upd{font-size:12px;color:var(--ink-3);text-align:center;margin-top:16px}
 
 
+
+/* Maosh */
+.mtop{display:flex;align-items:center;gap:8px;margin-top:10px}
+.mtop .lbl{flex:1;font-weight:700}
+.mc{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;margin-top:8px;cursor:pointer}
+.mc .r1{display:flex;align-items:center;gap:10px}
+.mc .r1 .nm{flex:1;min-width:0}
+.mc .r1 .nm b{display:block;font-weight:600}
+.mc .r1 .nm small{color:var(--ink-3);font-size:12.5px}
+.mc .sum{font-size:17px;font-weight:700;text-align:right}
+.mc .sum small{display:block;font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0 46px}
+.tag{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px}
+.tag.m{background:var(--bad-soft);color:var(--bad)}
+.tag.b{background:var(--ok-soft);color:var(--ok)}
+.tag.a{background:var(--accent-soft);color:var(--accent)}
+.tag.p{background:var(--ok);color:#fff}
+.total{display:flex;justify-content:space-between;align-items:center;background:var(--brand);color:#fff;border-radius:var(--r-sm);padding:14px;margin-top:10px}
+.total b{font-size:19px}
+.calc{background:var(--card);border-radius:var(--r-sm);padding:4px 14px;margin-top:12px}
+.calc div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.calc div:last-child{border-bottom:0}
+.calc div span{color:var(--ink-2)}
+.calc div.sub span{padding-left:12px;color:var(--ink-3);font-size:13px}
+.calc div.sub b{font-weight:500;font-size:13px}
+.calc .neg{color:var(--bad)} .calc .pos{color:var(--ok)}
+.calc div.tot{font-size:16px}
+.calc div.tot b{font-size:18px;color:var(--brand)}
+.itm{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:10px 12px;margin-top:6px}
+.itm .tx{flex:1;min-width:0;font-size:13.5px}
+.itm .tx small{display:block;color:var(--ink-3);font-size:12px}
+.itm b{font-size:14px;white-space:nowrap}
+.itm button{padding:6px 10px;border-radius:999px;background:#fff;color:var(--bad);font-size:12px;font-weight:600}
+.adv{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;margin-top:8px}
+.adv .r1{display:flex;justify-content:space-between;gap:10px}
+.adv .r1 b{font-size:17px}
+.adv .acts{margin-top:10px}
+.rl{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;margin-top:8px;display:flex;gap:10px;align-items:center}
+.rl .tx{flex:1;min-width:0}
+.rl .tx b{display:block;font-weight:600}
+.rl .tx small{color:var(--ink-3);font-size:12.5px}
+.rl .sm{font-weight:700;white-space:nowrap}
+.rl.off{opacity:.55}
+.grp{font-size:13px;font-weight:700;color:var(--ink-2);margin:16px 0 0}
+
 /* Tasklar */
 .fchips{display:flex;gap:6px;overflow-x:auto;margin:4px -16px 0;padding:0 16px 2px;scrollbar-width:none}
 .fchips::-webkit-scrollbar{display:none}
@@ -921,13 +966,274 @@ function drawRecForm() {
   };
 }
 
+
+/* =========================================================
+   Maosh (rahbar)
+   ========================================================= */
+const SL = { v: 'jamoa', off: 0, team: null, adv: null, kpi: null, kpiOff: 0, rules: null };
+const SERR = Object.assign({}, TERR, { nosalary: 'Bu xodimga oylik kiritilmagan', summa: 'Summani to\'g\'ri yozing', izoh: 'Sababini yozing', nomi: 'Nomini yozing', shart: 'Shartni tanlang', maqsad: 'Maqsadni yozing', fakt: 'Natijani yozing', nopay: 'To\'lanadigan summa yo\'q', rule: 'Qoida topilmadi' });
+const som = n => num(n) + ' so\'m';
+/* "500000", "500 ming", "1.5 mln", "1,5mln" → son */
+function parseSum(t) {
+  const m = String(t || '').toLowerCase().replace(/so['ʻ’]?m/g, '').replace(/\s+/g, '').replace(',', '.').match(/^(\d+(?:\.\d+)?)(k|ming|mln|million|m)?$/);
+  if (!m) return null;
+  let n = parseFloat(m[1]);
+  if (m[2] === 'k' || m[2] === 'ming') n *= 1e3;
+  if (m[2] === 'mln' || m[2] === 'million' || m[2] === 'm') n *= 1e6;
+  return Math.round(n);
+}
+
+async function openSal() {
+  if (!SL.team) $app.innerHTML = header(DATA.user, DATA.sana) + '<div class="sk" style="height:44px"></div><div class="sk" style="height:320px"></div>';
+  try {
+    const [t, a] = await Promise.all([api('salTeam', { off: SL.off }), api('advList')]);
+    if (t.error === 'forbidden') { $app.innerHTML = viewSoonMsg('Maosh', 'Bu bo\'lim faqat rahbarlar uchun.'); return; }
+    if (t.error || a.error) throw new Error(t.error || a.error);
+    SL.team = t; SL.adv = a.list; renderSal();
+  } catch (e) { $app.innerHTML = viewSoonMsg('Aloqa yo\'q', 'Qayta urinib ko\'ring.'); }
+}
+
+async function salLoad(v) {
+  SL.v = v;
+  try {
+    if (v === 'kpi') { const r = await api('kpiList', { off: SL.kpiOff }); if (r.error) throw 0; SL.kpi = r; }
+    if (v === 'qoida') { const r = await api('rules'); if (r.error) throw 0; SL.rules = r; }
+    if (v === 'avans') { const r = await api('advList'); if (r.error) throw 0; SL.adv = r.list; }
+    if (v === 'jamoa') { const r = await api('salTeam', { off: SL.off }); if (r.error) throw 0; SL.team = r; }
+  } catch (e) { return toast('Aloqa yo\'q', true); }
+  renderSal();
+}
+
+function renderSal() {
+  if (TAB !== 'maosh') return;
+  const sub = (k, l, n) => `<button data-v="${k}" class="${SL.v === k ? 'on' : ''}">${l}${n ? `<span class="n">${n}</span>` : ''}</button>`;
+  let body = '';
+  const monthBar = (off, id) => `<div class="mtop"><div class="lbl">${off ? 'O\'tgan oy' : 'Shu oy'}</div><div class="seg2" id="${id}" style="width:200px"><button data-o="0" class="${off ? '' : 'on'}">Shu oy</button><button data-o="1" class="${off ? 'on' : ''}">O'tgan oy</button></div></div>`;
+
+  if (SL.v === 'jamoa') {
+    const t = SL.team;
+    body = monthBar(SL.off, 'slM') + `<div class="sub" style="margin-top:6px">${t.label}${SL.off ? ' · to\'lash uchun xodimni bosing' : ' · hozirgacha hisoblangan'}</div>` +
+      (t.list.length ? t.list.map(p => `<div class="mc" data-id="${p.id}"><div class="r1"><div class="av">${esc(initials(p.ism))}</div>
+        <div class="nm"><b>${esc(p.ism)}</b><small>Oylik ${mln(p.oylik)} · ${p.kun}-sanada</small></div>
+        <div class="sum">${som(p.qolga)}<small>qo'lga</small></div></div>
+        <div class="tags">${p.minus ? `<span class="tag m">−${mln(p.minus)}</span>` : ''}${p.bonus ? `<span class="tag b">+${mln(p.bonus)}</span>` : ''}${p.avans ? `<span class="tag a">avans ${mln(p.avans)}</span>` : ''}${p.tolandi && p.qolga <= 0 ? '<span class="tag p">To\'langan</span>' : ''}</div></div>`).join('')
+        + `<div class="total"><span>Jami qo'lga</span><b>${som(t.jami)}</b></div>`
+        : `<div class="empty">Maosh varag'ida oylik kiritilgan xodim yo'q.</div>`);
+  }
+  if (SL.v === 'avans') {
+    body = SL.adv.length ? SL.adv.map(a => `<div class="adv" data-h="${a.hid}"><div class="r1"><div><b style="font-size:15px">${esc(a.ism)}</b><div class="sub">${esc(a.sana)}${a.sabab ? ' · ' + esc(a.sabab) : ''}</div></div><b>${som(a.summa)}</b></div>
+      ${a.summa > a.qolga ? `<div class="hint" style="color:var(--bad)">So'ralgan summa shu oy qolganidan (${som(a.qolga)}) ko'p</div>` : `<div class="hint">Shu oy qolgan: ${som(a.qolga)}</div>`}
+      <div class="acts"><button class="ok" data-ok="1">Berildi</button><button class="danger" data-ok="0">Rad etish</button></div></div>`).join('')
+      : `<div class="empty">Kutilayotgan avans so'rovi yo'q.</div>`;
+  }
+  if (SL.v === 'kpi') {
+    const k = SL.kpi;
+    body = monthBar(SL.kpiOff, 'kpM') + (k.list.length ? k.list.map(r => `<div class="mc" data-row="${r.row}"><div class="r1"><div class="av">${esc(initials(r.ism))}</div>
+      <div class="nm"><b>${esc(r.ism)} — ${esc(r.nomi)}</b><small>${r.pending ? 'Maqsad ' + num(r.maqsad) + ' · natija kiritilmagan' : num(r.fakt) + ' / ' + num(r.maqsad) + ' (' + r.pct + '%)'}</small></div>
+      <div class="sum">${r.pending ? mln(r.full) : som(r.summa)}<small>${r.pending ? (r.foiz ? 'foizga qarab' : '100% bo\'lsa') : 'bonus'}</small></div></div>
+      ${r.pending ? '' : `<div class="bar" style="margin:8px 0 0 46px"><i style="width:${Math.min(100, r.pct)}%"></i></div>`}</div>`).join('')
+      : `<div class="empty">Bu oyga KPI qo'yilmagan.${k.rules.length ? '' : ' Avval «Qoidalar»da KPI usulidagi bonus qoidasini qo\'shing.'}</div>`);
+  }
+  if (SL.v === 'qoida') {
+    const R = SL.rules.rules;
+    const grp = t => R.filter(q => q.turi === t).map(q => `<div class="rl ${q.faol ? '' : 'off'}" data-id="${q.id}"><div class="tx"><b>${esc(q.nomi)}</b><small>${esc(q.label)}${q.faol ? '' : ' · o\'chirilgan'}</small></div><span class="sm">${t === 'jarima' ? '−' : '+'}${mln(q.summa)}</span></div>`).join('') || `<div class="empty">Yo'q</div>`;
+    body = `<div class="grp">Jarimalar</div>${grp('jarima')}<div class="grp">Bonuslar</div>${grp('bonus')}`;
+  }
+
+  $app.innerHTML = header(DATA.user, DATA.sana) + `<div class="fchips" id="slV">${sub('jamoa', 'Jamoa')}${sub('avans', 'Avans so\'rovlari', SL.adv ? SL.adv.length : 0)}${sub('kpi', 'KPI')}${sub('qoida', 'Qoidalar')}</div>${body}<div style="height:70px"></div>`;
+
+  document.getElementById('slV').onclick = e => { const b = e.target.closest('button'); if (!b) return; haptic(); salLoad(b.dataset.v); };
+  const sm = document.getElementById('slM'); if (sm) sm.onclick = e => { const b = e.target.closest('button'); if (!b) return; SL.off = +b.dataset.o; salLoad('jamoa'); };
+  const km = document.getElementById('kpM'); if (km) km.onclick = e => { const b = e.target.closest('button'); if (!b) return; SL.kpiOff = +b.dataset.o; salLoad('kpi'); };
+  if (SL.v === 'jamoa') $app.querySelectorAll('.mc').forEach(el => (el.onclick = () => openPerson(el.dataset.id, SL.off)));
+  if (SL.v === 'kpi') $app.querySelectorAll('.mc').forEach(el => (el.onclick = () => openKpi(SL.kpi.list.find(r => String(r.row) === el.dataset.row))));
+  if (SL.v === 'qoida') $app.querySelectorAll('.rl').forEach(el => (el.onclick = () => openRule(SL.rules.rules.find(q => q.id === el.dataset.id))));
+  $app.querySelectorAll('.adv').forEach(el => (el.onclick = async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    b.disabled = true;
+    const r = await api('advDecide', { hid: el.dataset.h, ok: b.dataset.ok === '1' });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    SL.adv = r.list; renderSal(); toast(b.dataset.ok === '1' ? 'Avans berildi, xabar ketdi' : 'Rad etildi');
+  }));
+  const fab = document.getElementById('fab');
+  const fl = { jamoa: 'Yozish', avans: '', kpi: 'KPI qo\'yish', qoida: 'Qoida' }[SL.v];
+  fab.hidden = !fl;
+  fab.innerHTML = `${ic('plus')}${fl}`;
+  fab.onclick = () => (SL.v === 'kpi' ? openKpiForm() : SL.v === 'qoida' ? openRuleForm() : openGiveForm());
+}
+
+/* ---------- Xodim kartasi ---------- */
+async function openPerson(id, off) {
+  showSheet('<div class="sk" style="height:260px;margin:0"></div>'); haptic();
+  const r = await api('salPerson', { id, off });
+  if (r.error) { closeSheet(); return toast(SERR[r.error] || 'Xatolik', true); }
+  drawPerson(r);
+}
+function drawPerson(c) {
+  const row = (l, v, cls, sub) => `<div class="${sub ? 'sub' : ''}"><span>${l}</span><b class="${cls || ''}">${v}</b></div>`;
+  let calc = row('Oylik', som(c.oylik)) + row('Kunlik stavka (÷' + c.ishKunlari + ')', som(c.kunlik), '', true);
+  if (c.absent.length) calc += row('Sababsiz kelmagan: ' + c.absent.length + ' kun', '−' + som(c.absent.length * c.kunlik), 'neg');
+  if (c.offCut.length) calc += row('Limitdan ortiq dam: ' + c.offCut.length + ' kun', '−' + som(c.offCut.length * c.kunlik), 'neg');
+  if (c.ushQolda) calc += row('Boshqa ushlashlar', '−' + som(c.ushQolda), 'neg');
+  if (c.jarima) calc += row('Jarimalar', '−' + som(c.jarima), 'neg');
+  c.auto.filter(a => a.turi === 'jarima').forEach(a => (calc += row(a.nomi + (a.count > 1 ? ' ×' + a.count : '') + ' (avto)', '−' + som(a.summa), '', true)));
+  if (c.bonus) calc += row('Bonuslar', '+' + som(c.bonus), 'pos');
+  c.auto.filter(a => a.turi === 'bonus').forEach(a => (calc += row(a.nomi + ' (avto)', a.pending ? 'oy yakunida' : '+' + som(a.summa), '', true)));
+  c.kpi.forEach(k => (calc += row('KPI: ' + k.nomi, k.pending ? 'natija yo\'q' : k.pct + '% → +' + som(k.summa), '', true)));
+  calc += row('Hisoblandi', som(c.hisoblandi));
+  if (c.avans) calc += row('Olingan avans', '−' + som(c.avans), 'neg');
+  if (c.tolandi) calc += row('To\'langan', '−' + som(c.tolandi), 'neg');
+  calc += `<div class="tot"><span>Qo'lga tegadi</span><b>${som(c.qolga)}</b></div>`;
+  const icn = { avans: 'Avans', jarima: 'Jarima', bonus: 'Bonus', ushlash: 'Ushlash', tolov: 'To\'lov' };
+  const items = c.items.length ? `<div class="fld"><label>Yozuvlar</label></div>` + c.items.map(i => `<div class="itm" data-h="${i.id}"><div class="tx">${icn[i.turi] || i.turi}${i.sabab ? ': ' + esc(i.sabab) : ''}<small>${esc(i.sana)}</small></div><b>${som(i.summa)}</b><button>Bekor</button></div>`).join('') : '';
+  showSheet(`<div class="sh-h"><div class="av">${esc(initials(c.ism))}</div><div class="nm"><b>${esc(c.ism)}</b><small>${esc(c.label)} · ${esc(c.tolovKuni)}</small></div></div>
+    <div class="calc">${calc}</div>${items}
+    ${c.canPay ? `<button class="save" id="pPay" style="background:var(--ok)">To'landi: ${som(c.qolga)}</button><div class="hint" style="text-align:center">Xodimga to'liq hisob-kitob bilan xabar boradi</div>` : ''}`);
+  document.querySelectorAll('.itm button').forEach(b => (b.onclick = async () => {
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Rostdanmi?'; return; }
+    b.disabled = true;
+    const r = await api('salCancel', { hid: b.closest('.itm').dataset.h, off: c.off });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    drawPerson(r); toast('Bekor qilindi, xabar ketdi'); salLoad('jamoa');
+  }));
+  const pb = document.getElementById('pPay');
+  if (pb) pb.onclick = async () => {
+    if (!pb.dataset.sure) { pb.dataset.sure = 1; pb.textContent = 'Tasdiqlang: ' + som(c.qolga) + ' to\'landi'; return; }
+    pb.disabled = true;
+    const r = await api('salPay', { id: c.id, prefix: c.prefix });
+    if (r.error) { pb.disabled = false; return toast(SERR[r.error] || 'Xatolik', true); }
+    drawPerson(r); toast('To\'landi, xodimga xabar ketdi'); salLoad('jamoa');
+  };
+}
+
+/* ---------- Jarima / bonus / avans yozish ---------- */
+let GF = null;
+async function openGiveForm() {
+  if (!SL.rules) { const r = await api('rules'); if (!r.error) SL.rules = r; }
+  GF = { turi: 'jarima', id: '', qid: '', summa: '', izoh: '' };
+  drawGive(); haptic();
+}
+function drawGive() {
+  const users = SL.team.list;
+  const rules = (SL.rules ? SL.rules.rules : []).filter(q => q.turi === GF.turi && q.usul === 'qolda' && q.faol);
+  showSheet(`<div class="bigtext" style="margin-bottom:4px">Hisobga yozish</div>
+    <div class="fld"><div class="seg2" id="gT"><button data-v="jarima" class="${GF.turi === 'jarima' ? 'on' : ''}">Jarima</button><button data-v="bonus" class="${GF.turi === 'bonus' ? 'on' : ''}">Bonus</button><button data-v="avans" class="${GF.turi === 'avans' ? 'on' : ''}">Avans</button></div></div>
+    <div class="fld"><label>Kimga</label><div class="chips" id="gU">${users.map(u => `<button data-v="${u.id}" class="${GF.id === u.id ? 'sel' : ''}">${esc(u.ism.split(' ')[0])}</button>`).join('')}</div></div>
+    ${GF.turi !== 'avans' && rules.length ? `<div class="fld"><label>Qoida</label><div class="chips" id="gR">${rules.map(q => `<button data-v="${q.id}" class="${GF.qid === q.id ? 'sel' : ''}">${esc(q.nomi)} · ${mln(q.summa)}</button>`).join('')}<button data-v="" class="${GF.qid === '' ? 'sel' : ''}">Boshqa summa</button></div></div>` : ''}
+    ${GF.qid ? '' : `<div class="fld"><label>Summa</label><input class="inp" id="gS" inputmode="decimal" placeholder="Masalan: 50 ming yoki 1.5 mln" value="${esc(GF.summa)}"></div>`}
+    <div class="fld"><label>Izoh ${GF.turi === 'avans' ? '(ixtiyoriy)' : '(xodim ko\'radi)'}</label><input class="inp" id="gI" value="${esc(GF.izoh)}" placeholder="${GF.turi === 'bonus' ? 'Masalan: oyning eng yaxshi sotuvchisi' : GF.turi === 'jarima' ? 'Masalan: mijozga qo\'pol javob' : 'Masalan: naqd berildi'}"></div>
+    <button class="save" id="gSave">Yozish</button>`);
+  const g = id => document.getElementById(id);
+  const keep = () => { if (g('gS')) GF.summa = g('gS').value; GF.izoh = g('gI').value; };
+  g('gT').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); GF.turi = b.dataset.v; GF.qid = ''; drawGive(); };
+  g('gU').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); GF.id = b.dataset.v; drawGive(); };
+  if (g('gR')) g('gR').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); GF.qid = b.dataset.v; drawGive(); };
+  g('gSave').onclick = async () => {
+    keep();
+    if (!GF.id) return toast('Xodimni tanlang', true);
+    const summa = GF.qid ? 0 : parseSum(GF.summa);
+    if (!GF.qid && !summa) return toast(SERR.summa, true);
+    g('gSave').disabled = true;
+    const r = await api('salGive', { turi: GF.turi, id: GF.id, qoida_id: GF.qid, summa, izoh: GF.izoh });
+    if (r.error) { g('gSave').disabled = false; return toast(SERR[r.error] || 'Xatolik', true); }
+    closeSheet(); toast('Yozildi, xodimga xabar ketdi'); salLoad('jamoa');
+  };
+}
+
+/* ---------- KPI ---------- */
+function openKpi(k) {
+  showSheet(`<div class="sh-h"><div class="av">${esc(initials(k.ism))}</div><div class="nm"><b>${esc(k.ism)} — ${esc(k.nomi)}</b><small>Maqsad ${num(k.maqsad)} · bonus ${som(k.full)}${k.foiz ? ' (foizga qarab)' : ' (100% bo\'lsa)'}</small></div></div>
+    <div class="fld"><label>Natija</label><input class="inp" id="kF" inputmode="decimal" placeholder="Masalan: 48 mln yoki 27" value="${k.pending ? '' : k.fakt}"></div>
+    <button class="save" id="kS">Saqlash</button>
+    <div class="acts"><button class="danger" id="kX">KPI ni bekor qilish</button></div>`);
+  document.getElementById('kS').onclick = async () => {
+    const v = parseSum(document.getElementById('kF').value) ?? (/^\d+$/.test(document.getElementById('kF').value.trim()) ? +document.getElementById('kF').value.trim() : null);
+    if (v == null) return toast(SERR.fakt, true);
+    const r = await api('kpiFact', { row: k.row, fakt: v });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    SL.kpi = r; closeSheet(); renderSal(); toast('Saqlandi, xodimga natija ketdi');
+  };
+  const x = document.getElementById('kX');
+  x.onclick = async () => {
+    if (!x.dataset.sure) { x.dataset.sure = 1; x.textContent = 'Rostdan bekor qilinsinmi?'; return; }
+    const r = await api('kpiCancel', { row: k.row });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    SL.kpi = r; closeSheet(); renderSal(); toast('Bekor qilindi');
+  };
+}
+let KF = null;
+function openKpiForm() {
+  if (!SL.kpi.rules.length) return toast('Avval «Qoidalar»da KPI usulidagi bonus qoidasini qo\'shing', true);
+  KF = { id: '', qid: SL.kpi.rules[0].id, nomi: '', maqsad: '' }; drawKpiForm(); haptic();
+}
+function drawKpiForm() {
+  const k = SL.kpi;
+  showSheet(`<div class="bigtext" style="margin-bottom:4px">Shu oy uchun KPI</div>
+    <div class="fld"><label>Kimga</label><div class="chips" id="kU">${k.users.map(u => `<button data-v="${u.id}" class="${KF.id === u.id ? 'sel' : ''}">${esc(u.ism.split(' ')[0])}</button>`).join('')}</div></div>
+    <div class="fld"><label>Bonus qoidasi</label><div class="chips" id="kR">${k.rules.map(q => `<button data-v="${q.id}" class="${KF.qid === q.id ? 'sel' : ''}">${esc(q.nomi)} · ${mln(q.summa)}${q.foiz ? ' · %' : ''}</button>`).join('')}</div></div>
+    <div class="fld"><label>Ko'rsatkich nomi (ixtiyoriy)</label><input class="inp" id="kN" value="${esc(KF.nomi)}" placeholder="Masalan: Sotuv summasi"></div>
+    <div class="fld"><label>Maqsad</label><input class="inp" id="kM" inputmode="decimal" value="${esc(KF.maqsad)}" placeholder="Masalan: 60 mln yoki 30 (post soni)"></div>
+    <button class="save" id="kSave">Qo'yish</button>`);
+  const g = id => document.getElementById(id);
+  const keep = () => { KF.nomi = g('kN').value; KF.maqsad = g('kM').value; };
+  g('kU').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); KF.id = b.dataset.v; drawKpiForm(); };
+  g('kR').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); KF.qid = b.dataset.v; drawKpiForm(); };
+  g('kSave').onclick = async () => {
+    keep();
+    if (!KF.id) return toast('Xodimni tanlang', true);
+    const m = parseSum(KF.maqsad) ?? (/^\d+$/.test(KF.maqsad.trim()) ? +KF.maqsad.trim() : null);
+    if (!m) return toast(SERR.maqsad, true);
+    const r = await api('kpiCreate', { id: KF.id, qoida_id: KF.qid, nomi: KF.nomi, maqsad: m });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    SL.kpi = r; SL.kpiOff = 0; closeSheet(); renderSal(); toast('KPI qo\'yildi, xodimga xabar ketdi');
+  };
+}
+
+/* ---------- Qoidalar ---------- */
+function openRule(q) {
+  showSheet(`<div class="bigtext">${esc(q.nomi)}</div><div class="sub" style="margin-top:4px">${q.turi === 'jarima' ? 'Jarima' : 'Bonus'} · ${som(q.summa)} · ${esc(q.label)}</div>
+    <div class="acts"><button id="rT">${q.faol ? 'O\'chirib qo\'yish' : 'Yoqish'}</button><button class="danger" id="rD">O'chirish</button></div>`);
+  const done = (r, msg) => { if (r.error) return toast(SERR[r.error] || 'Xatolik', true); SL.rules = r; closeSheet(); renderSal(); toast(msg); };
+  document.getElementById('rT').onclick = async () => done(await api('ruleToggle', { id: q.id }), 'Saqlandi');
+  const d = document.getElementById('rD');
+  d.onclick = async () => { if (!d.dataset.sure) { d.dataset.sure = 1; d.textContent = 'Rostdan o\'chirilsinmi?'; return; } done(await api('ruleDelete', { id: q.id }), 'O\'chirildi'); };
+}
+let RL = null;
+function openRuleForm() { RL = { turi: 'jarima', nomi: '', summa: '', usul: 'qolda', shart: '' }; drawRuleForm(); haptic(); }
+function drawRuleForm() {
+  const opts = RL.usul === 'avto' ? SL.rules.auto[RL.turi] : RL.usul === 'kpi' ? SL.rules.kpi : null;
+  showSheet(`<div class="bigtext" style="margin-bottom:4px">Yangi qoida</div>
+    <div class="fld"><div class="seg2" id="qT"><button data-v="jarima" class="${RL.turi === 'jarima' ? 'on' : ''}">Jarima</button><button data-v="bonus" class="${RL.turi === 'bonus' ? 'on' : ''}">Bonus</button></div></div>
+    <div class="fld"><label>Nomi</label><input class="inp" id="qN" value="${esc(RL.nomi)}" placeholder="${RL.turi === 'jarima' ? 'Masalan: Kechikish' : 'Masalan: Sotuv rejasi'}"></div>
+    <div class="fld"><label>Summa</label><input class="inp" id="qS" inputmode="decimal" value="${esc(RL.summa)}" placeholder="Masalan: 20 ming yoki 500 ming"></div>
+    <div class="fld"><label>Qanday qo'llanadi</label><div class="seg2" id="qU"><button data-v="qolda" class="${RL.usul === 'qolda' ? 'on' : ''}">Qo'lda</button><button data-v="avto" class="${RL.usul === 'avto' ? 'on' : ''}">Avto</button>${RL.turi === 'bonus' ? `<button data-v="kpi" class="${RL.usul === 'kpi' ? 'on' : ''}">KPI</button>` : ''}</div>
+      <div class="hint">${RL.usul === 'qolda' ? 'Siz o\'zingiz «Yozish» orqali berasiz.' : RL.usul === 'avto' ? 'Bot davomat va tasklardan o\'zi hisoblaydi.' : 'Oy boshida maqsad qo\'yiladi, natijaga qarab beriladi.'}</div></div>
+    ${opts ? `<div class="fld"><label>${RL.usul === 'kpi' ? 'Bonus qanday hisoblansin' : 'Qachon qo\'llansin'}</label><div class="chips" id="qH">${Object.keys(opts).map(k => `<button data-v="${k}" class="${RL.shart === k ? 'sel' : ''}">${esc(opts[k])}</button>`).join('')}</div></div>` : ''}
+    <button class="save" id="qSave">Saqlash</button>`);
+  const g = id => document.getElementById(id);
+  const keep = () => { RL.nomi = g('qN').value; RL.summa = g('qS').value; };
+  g('qT').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); RL.turi = b.dataset.v; if (RL.usul === 'kpi' && RL.turi === 'jarima') RL.usul = 'qolda'; RL.shart = ''; drawRuleForm(); };
+  g('qU').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); RL.usul = b.dataset.v; RL.shart = RL.usul === 'kpi' ? 'toliq' : ''; drawRuleForm(); };
+  if (g('qH')) g('qH').onclick = e => { const b = e.target.closest('button'); if (!b) return; keep(); RL.shart = b.dataset.v; drawRuleForm(); };
+  g('qSave').onclick = async () => {
+    keep();
+    const summa = parseSum(RL.summa);
+    if (!RL.nomi.trim()) return toast(SERR.nomi, true);
+    if (!summa) return toast(SERR.summa, true);
+    if (RL.usul === 'avto' && !RL.shart) return toast(SERR.shart, true);
+    const r = await api('ruleCreate', { turi: RL.turi, nomi: RL.nomi, summa, usul: RL.usul, shart: RL.shart });
+    if (r.error) return toast(SERR[r.error] || 'Xatolik', true);
+    SL.rules = r; closeSheet(); renderSal(); toast('Qoida qo\'shildi');
+  };
+}
+
 /* ---------- Chizish va hodisalar ---------- */
 function render() {
   document.getElementById('fab').hidden = true;
   if (TAB === 'panel') $app.innerHTML = viewPanel(DATA);
   if (TAB === 'davomat') return openAtt();
   if (TAB === 'tasklar') return openTasks();
-  if (TAB === 'maosh') $app.innerHTML = viewSoon('Maosh');
+  if (TAB === 'maosh') return openSal();
   bind();
 }
 
@@ -995,6 +1301,40 @@ async function load() {
 
 /* ---------- Namuna ma'lumot (Telegram'dan tashqarida) ---------- */
 
+
+let DS = null;
+function demoSal(name, x) {
+  if (!DS) DS = {
+    team: [{ id: '2', ism: 'Javohir Nematov', oylik: 5e6, kun: 10, ab: 0, j: 0, b: 0, av: 566000, t: 0 }, { id: '3', ism: 'Shavkat Xazratkulov', oylik: 5e6, kun: 10, ab: 0, j: 0, b: 0, av: 0, t: 0 },
+      { id: '4', ism: 'Yormuhammad', oylik: 1e6, kun: 10, ab: 0, j: 40000, b: 0, av: 0, t: 0 }, { id: '5', ism: 'Lola Rustamovna', oylik: 2e6, kun: 20, ab: 1, j: 0, b: 400000, av: 300000, t: 0 }, { id: '6', ism: 'Doston Mirzokarimov', oylik: 3e6, kun: 10, ab: 1, j: 0, b: 0, av: 0, t: 0 }],
+    adv: [{ hid: '9', ism: 'Yormuhammad', summa: 300000, sabab: 'Telefon to\'lovi', sana: '22.11.2026', qolga: 960000 }],
+    rules: [{ id: '1', turi: 'jarima', nomi: 'Kechikish', summa: 20000, usul: 'avto', shart: 'kechikish', faol: true, label: 'Har bir kechikish uchun' }, { id: '2', turi: 'jarima', nomi: 'Mijozga qo\'pollik', summa: 100000, usul: 'qolda', shart: '', faol: true, label: 'qo\'lda' }, { id: '3', turi: 'bonus', nomi: 'Sotuv rejasi', summa: 500000, usul: 'kpi', shart: 'foiz', faol: true, label: 'KPI: foizga qarab' }],
+    kpi: [{ row: 2, ism: 'Lola Rustamovna', nomi: 'Sotuv summasi', maqsad: 6e7, fakt: 48e6, pct: 80, summa: 400000, full: 500000, pending: false, foiz: true }, { row: 3, ism: 'Yormuhammad', nomi: 'Sotuv summasi', maqsad: 3e7, fakt: 0, pct: 0, summa: 0, full: 500000, pending: true, foiz: true }],
+  };
+  const calc = p => { const kunlik = Math.round(p.oylik / 26), h = p.oylik - p.ab * kunlik - p.j + p.b; return { kunlik, h, q: h - p.av - p.t }; };
+  const team = off => ({ off, label: off ? 'Oktabr 2026' : 'Noyabr 2026', prefix: off ? '2026-10' : '2026-11', list: DS.team.map(p => { const c = calc(p); return { id: p.id, ism: p.ism, oylik: p.oylik, hisoblandi: c.h, qolga: off ? (p.paid ? 0 : p.oylik) : c.q, minus: off ? 0 : p.ab * c.kunlik + p.j, bonus: off ? 0 : p.b, avans: off ? 0 : p.av, tolandi: off && p.paid ? p.oylik : 0, kun: p.kun }; }), jami: DS.team.reduce((a, p) => a + (off ? (p.paid ? 0 : p.oylik) : calc(p).q), 0), kutilayotgan: DS.adv.length });
+  const person = (id, off) => { const p = DS.team.find(t => t.id === id), c = calc(p); return { off, prefix: off ? '2026-10' : '2026-11', label: off ? 'Oktabr 2026' : 'Noyabr 2026', id, ism: p.ism, oylik: p.oylik, kunlik: c.kunlik, ishKunlari: 26, absent: off ? [] : Array(p.ab).fill('18.11.2026'), offCut: [], ushKun: 0, ushQolda: 0, jarima: off ? 0 : p.j, bonus: off ? 0 : p.b, avans: off ? 0 : p.av, tolandi: off && p.paid ? p.oylik : 0, hisoblandi: off ? p.oylik : c.h, qolga: off ? (p.paid ? 0 : p.oylik) : c.q, auto: !off && p.j ? [{ turi: 'jarima', nomi: 'Kechikish', count: 2, summa: p.j }] : [], kpi: !off && p.b ? [{ nomi: 'Sotuv summasi', maqsad: 6e7, fakt: 48e6, pct: 80, summa: 400000 }] : [], items: !off && p.av ? [{ id: '1', sana: '21.11.2026', turi: 'avans', summa: p.av, sabab: 'Yo\'l xarajati' }] : [], tolovKuni: 'To\'lov kuni: ' + p.kun + '.' + (off ? '11' : '12') + '.2026', canPay: !!off && !p.paid }; };
+  const R = () => ({ rules: DS.rules, auto: { jarima: { kechikish: 'Har bir kechikish uchun', kelmadi: 'Har sababsiz kelmagan kun uchun', erta: 'Har erta ketish uchun', task_kech: 'Har kechiktirilgan task uchun' }, bonus: { davomat_ideal: 'Oy davomida kechikish va sababsiz kelmaslik bo\'lmasa', task_90: 'Tasklarning 90%+ vaqtida bajarilsa' } }, kpi: { toliq: 'Maqsad 100% bajarilsa — to\'liq summa', foiz: 'Bajarilgan foizga qarab' } });
+  const K = () => ({ off: 0, label: 'Noyabr 2026', list: DS.kpi, rules: DS.rules.filter(q => q.usul === 'kpi').map(q => ({ id: q.id, nomi: q.nomi, summa: q.summa, foiz: q.shart === 'foiz' })), users: DS.team.map(p => ({ id: p.id, ism: p.ism })) });
+  switch (name) {
+    case 'salTeam': return team(+x.off || 0);
+    case 'salPerson': return person(x.id, +x.off || 0);
+    case 'salPay': DS.team.find(t => t.id === x.id).paid = true; return person(x.id, 1);
+    case 'salCancel': DS.team.forEach(t => (t.av = 0)); return person(DS.team.find(t => t.id === '5').id, 0);
+    case 'advList': return { list: DS.adv };
+    case 'advDecide': DS.adv = []; return { list: [] };
+    case 'salGive': { const p = DS.team.find(t => t.id === x.id); const s = x.qoida_id ? DS.rules.find(q => q.id === x.qoida_id).summa : x.summa; if (x.turi === 'jarima') p.j += s; if (x.turi === 'bonus') p.b += s; if (x.turi === 'avans') p.av += s; return { ok: true }; }
+    case 'rules': return R();
+    case 'ruleCreate': DS.rules.push({ id: String(DS.rules.length + 1), turi: x.turi, nomi: x.nomi, summa: x.summa, usul: x.usul, shart: x.shart, faol: true, label: x.usul === 'qolda' ? 'qo\'lda' : x.usul === 'kpi' ? 'KPI' : (R().auto[x.turi] || {})[x.shart] }); return R();
+    case 'ruleToggle': { const q = DS.rules.find(q => q.id === x.id); q.faol = !q.faol; return R(); }
+    case 'ruleDelete': DS.rules = DS.rules.filter(q => q.id !== x.id); return R();
+    case 'kpiList': return K();
+    case 'kpiCreate': DS.kpi.push({ row: 9, ism: DS.team.find(t => t.id === x.id).ism, nomi: x.nomi || 'Sotuv rejasi', maqsad: x.maqsad, fakt: 0, pct: 0, summa: 0, full: 500000, pending: true, foiz: true }); return K();
+    case 'kpiFact': { const k = DS.kpi.find(k => k.row === x.row); k.fakt = x.fakt; k.pct = Math.round(x.fakt / k.maqsad * 100); k.summa = Math.round(k.full * Math.min(k.pct, 100) / 100); k.pending = false; return K(); }
+    case 'kpiCancel': DS.kpi = DS.kpi.filter(k => k.row !== x.row); return K();
+  }
+}
+
 let DT = null;
 function demoTasks(name, x) {
   if (!DT) {
@@ -1033,6 +1373,7 @@ let DEMO_ATT = null;
 function demoData(name, x) {
   if (name && name.indexOf('att') === 0) return demoAtt(name, x);
   if (name && (name.indexOf('task') === 0 || name.indexOf('rec') === 0)) return demoTasks(name, x);
+  if (name && /^(sal|adv|rule|kpi)/.test(name)) return demoSal(name, x);
   return demoDash();
 }
 function demoAtt(name, x) {
